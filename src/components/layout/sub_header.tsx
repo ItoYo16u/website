@@ -28,13 +28,13 @@ const Component: React.FC<IProps> = ({ className, currentPage }) => (
       <Title>{currentPage}</Title>
       <HorizontallySeparatedList spacing={4}>
         {[
-          <Link key="home" className="inlineNav" to={"/"}>
+          <Link aria-label="home" key="home" className="inlineNav" to={"/"}>
             #Home
           </Link>,
-          <Link key="tags" className="inlineNav" to={"/tags"}>
+          <Link aria-label="tags" key="tags" className="inlineNav" to={"/tags"}>
             #Tags
           </Link>,
-          <Link key="about" className="inlineNav" to={"/about"}>
+          <Link aria-label="about" key="about" className="inlineNav" to={"/about"}>
             #About
           </Link>,
         ]}

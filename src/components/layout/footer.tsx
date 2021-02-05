@@ -21,6 +21,7 @@ const Component: React.FC<IProps> = ({ className }) => (
     <p>
       © {new Date().getFullYear()}, Built with
       <a
+        aria-label="link to gatsby"
         href="https://www.gatsbyjs.org"
         target="_blank"
         rel="noopener noreferrer"
@@ -32,6 +33,7 @@ const Component: React.FC<IProps> = ({ className }) => (
     <p>
       createdBy
       <a
+        aria-label="link to twitter"
         href="https://twitter.com/by110416"
         target="_blank"
         rel="noopener noreferrer"

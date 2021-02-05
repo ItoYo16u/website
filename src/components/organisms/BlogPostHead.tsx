@@ -20,7 +20,7 @@ export const Plain: PlainComponent<BlogPostHeadProps> = ({
     <div className={className}>
       <HorizontallySeparatedList spacing={4}>
         {tags.map((v) => (
-          <Link to={`/tags/${v}`}>
+          <Link aria-label={`link to ${v}`}  to={`/tags/${v}`}>
             <Tag>{v}</Tag>
           </Link>
         ))}

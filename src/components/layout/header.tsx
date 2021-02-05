@@ -24,7 +24,7 @@ const Component: React.FC<IProps> = ({
 }) => (
   <header className={className}>
     <div className="headerContentWrapper">
-      <Link to="/">
+      <Link to="/" aria-label="home">
         <Title className={"title"}>{siteTitle}</Title>
       </Link>
       <div>
