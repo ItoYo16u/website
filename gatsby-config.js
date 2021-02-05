@@ -103,7 +103,6 @@ module.exports = {
     },
     `gatsby-plugin-catch-links`,
     `gatsby-plugin-sitemap`,
-    `gatsby-plugin-feed`,
     `gatsby-plugin-remove-serviceworker`,
     `gatsby-plugin-lodash`,
     {
