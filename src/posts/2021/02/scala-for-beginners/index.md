@@ -2,15 +2,14 @@
 path: "scala-for-beginners"
 date: "2021-02-03"
 title: "scala for beginners"
-description: "scala初心者向けの前知識"
+description: "このページでは,Scalaの初心者の躓きがちな点を考慮しつつScalaの使い方について説明します."
 status: "draft"
 tags: ["scala"]
 ---
 
 # Scala-for-beginners
-
 ## About
-
+このページでは,Scalaの初心者の躓きがちな点を考慮しつつScalaの使い方について説明します.
 ## Java系の知識
 
 ### openJDKについて
