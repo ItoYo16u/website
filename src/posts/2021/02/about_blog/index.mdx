@@ -274,6 +274,31 @@ Set analytics ids in `gatsby-config.js`
     },
 ```
 
+#### improve performance 
+
+
+Avoid use `fas`,`fab` from fontawesome svg.
+
+```javascript:avoid.js
+import "@fortawesome/fontawesome-svg-core/styles.css"
+import { library } from "@fortawesome/fontawesome-svg-core"
+import { fas } from "@fortawesome/free-solid-svg-icons"
+import { far } from "@fortawesome/free-regular-svg-icons"
+import { fab } from "@fortawesome/free-brands-svg-icons"
+library.add(fas)
+library.add(far)
+library.add(fab)
+```
+Instead, use specific icon name such as `faTwitter`,`faGithub`.
+
+```javascript:prefer.js
+import { library } from "@fortawesome/fontawesome-svg-core"
+import {
+  faTwitter,
+  faGithub
+} from "@fortawesome/free-brands-svg-icons"
+```
+
 #### Generate site map
 Gatsby automatically generates `sitemap.xml` inside public directory.
 

@@ -9,6 +9,7 @@ const config = require("./config/site")
 module.exports = {
   siteMetadata: { ...config },
   plugins: [
+    `gatsby-plugin-fontawesome-css`,
     "gatsby-transformer-sharp",
     `gatsby-plugin-sharp`,
     `gatsby-plugin-emotion`,
