@@ -261,7 +261,7 @@ module.exports = {
 
 Set analytics ids in `gatsby-config.js`
 
-```javascript:gatsby-config.js
+```javascript:title=gatsby-config.js
     {
       resolve: `gatsby-plugin-google-gtag`,
       options: {
@@ -279,7 +279,7 @@ Set analytics ids in `gatsby-config.js`
 
 Avoid use `fas`,`fab` from fontawesome svg.
 
-```javascript:avoid.js
+```javascript:title=avoid.js
 import "@fortawesome/fontawesome-svg-core/styles.css"
 import { library } from "@fortawesome/fontawesome-svg-core"
 import { fas } from "@fortawesome/free-solid-svg-icons"
@@ -291,7 +291,7 @@ library.add(fab)
 ```
 Instead, use specific icon name such as `faTwitter`,`faGithub`.
 
-```javascript:prefer.js
+```javascript:title=prefer.js
 import { library } from "@fortawesome/fontawesome-svg-core"
 import {
   faTwitter,
