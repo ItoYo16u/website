@@ -8,6 +8,24 @@ tags: ["scala","ammonite"]
 ---
 
 # getting started with ammonite
+[ammonite](https://ammonite.io/)をご存知だろうか. 
+
+ammoniteは、ScalaのモダンなREPLや`sbt`を使うよりも簡単なセットアップで
+Scalaスクリプトを書けるScript、ファイルシステムやshellのことだ.
+
+例えば、以下のような`example.sc`ファイルを用意するだけでScalaスクリプトを実行できる.
+
+```scala:title=example.sc
+println("hello ammonite")
+```
+
+```shell:title=shell
+amm example.sc
+```
+
+shellやREPLに`@`マークがあるから`ammonite`という命名になったらしい.
+
+このammoniteを使うとScalaの開発体験が爆上がりするので紹介する.
 
 ## 概要
 
