@@ -220,6 +220,7 @@ const SEO: React.FCX<Props> = ({
 
       <meta name="description" content={seo.description} />
       <meta name="image" content={seo.image} />
+      <link rel="preconnect" href="https://fonts.gstatic.com/" crossOrigin="anonymous"/>
       <link rel="preconnect dns-prefetch" href="https://fonts.googleapis.com" />
 
       <meta property="og:type" content="website" />
