@@ -32,7 +32,7 @@ const Component: React.FC<IProps> = ({
     onMouseEnter={() => setHover(true)}
     onMouseLeave={() => setHover(false)}
   >
-    <Link to={path || "/"}>
+    <Link aria-label={`link to ${title}`} to={path || "/"}>
       <div className={"body"}>
         <h3 className={"articleTitle"}>{title}</h3>
         {excerpt && <p className={"excerpt"}>{excerpt}</p>}
