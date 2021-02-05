@@ -1,0 +1,175 @@
+---
+path: "getting-started-with-ammonite"
+date: "20210202"
+title: "ammoniteをはじめよう"
+description: "Scalaのモダンなユーティリティ ammoniteの環境構築"
+status: "public"
+tags: ["scala","ammonite"]
+---
+
+# getting started with ammonite
+
+## tl;dr
+
+- coursier (https://get-coursier.io/docs/cli-installation) はScalaのライブラリを取得するためのライブラリ
+- coursierのCLI,csコマンドが便利
+  - `cs setup` コマンドでjava,sbtが入っていない状態からscalaの開発環境を用意できる
+  - `install <Library name>` コマンドでライブラリをサクッとインストールできる
+
+- ammonite(https://ammonite.io/#Ammonite)
+  - scala でスクリプトを書くためのさまざまなユーティリティ(Repl,shell,ファイル操作)を提供している
+  - *.sc ファイルにScalaのスクリプトを書いて動かせる
+    - scalaのプロジェクトと異なり,built.sbtを書いてセットアップする必要がない
+    - ライブラリのインポートもコマンドラインからスムーズに行える
+  - VSCode のScala 拡張機能Metals のサポートが効く
+  - Scalaの便利な機能とスクリプト言語のような手軽さを両立させている
+
+
+
+## install coursier
+coursierのインストール
+
+```shell
+# install cs(CLI for coursier) locally
+curl -fLo cs https://git.io/coursier-cli-"$(uname | tr LD ld)"
+chmod +x cs
+# install cs globally
+./cs install cs
+# Then, you have to update Path in .bashrc.
+
+# check if cs was successfully installed
+cs --help
+rm cs # cs locally installed is no longer necessary
+```
+
+## setup java and scala environment
+
+```shell
+cs setup
+# default java is AdoptOpenJDK 8
+# if you want to install jdk11
+# cs setup --jvm 11
+```
+
+パスを通したらjava,scalaがインストールされているかどうか確認する
+
+```shell
+java -version
+scala -version
+```
+
+## install ammonite
+ammoniteのインストール
+```shell
+cs install ammonite
+
+amm # enter ammonite Repl
+```
+
+## basic usages and commands
+
+### watch file changes and automatically reload
+ファイルの変更を検知する
+```shell
+amm --watch filename.sc
+```
+
+### run sc file
+コマンドラインから*.scファイルを実行する
+
+```scala:title=hello.sc
+@main
+def main()= {
+  println("hello ammonite!")
+}
+```
+
+```shell
+amm hello.sc
+# => hello ammonite!
+```
+
+### run sc file with arguments
+コマンドラインから引数を渡す
+```scala:title=hello.sc
+@main
+def main(name:String,number:Int) = {
+  println(s"hello $name,number: $number")
+}
+```
+
+```shell
+amm hello.sc johnDoe 0
+#=> hello johnDoe,number: 0
+```
+`@main`アノテーションなしのファイルも動く.
+Source code without @main like below also works.
+
+```scala:title=hello_v2.sc
+println("hello ammonite!")
+```
+
+### run one of entrypoints annotated with @main
+`@main`アノテーションのついたメソッドのうちひとつをコマンドラインから実行する
+```scala:title=example.sc
+
+@main
+def prodMain()={
+  println("this is for prod")
+}
+
+@main
+def debugMain()={
+  println("this is for debug")
+}
+```
+
+```shell script
+amm example.sc debugMain
+```
+
+### import external libraries
+ライブラリをインポートする
+#### import ivy libs
+
+If you want to import ``"hoge %% foo % varsion"``
+Change `%` to `:` like below.
+
+```scala:title=main.sc
+import $ivy.`org.scalaz::scalaz-core:7.2.7`
+import scalaz._
+```
+
+Multiple libraries can be loaded like bellow.
+
+```scala
+import $ivy.{
+  `hoge::fuga:piyo`,
+  `foo::bar:baz`
+}
+```
+
+### Debug code with ammonite Repl
+
+``amm --predef [file_name].sc`` と呼び出すことで、`[file_name].sc`で定義したメソッドがreplから呼び出せる.
+また、repl内から`import $file.[file_name]` とコマンドをうっても呼び出せる.
+```scala:title=main.sc
+@main
+def main()= {
+  println("debug from repl!")
+}
+```
+
+```shell
+amm --predef main.sc
+# Welcome to the Ammonite Repl 2.3.8-32-64308dc3 (Scala 2.13.4 Java 11.0.9.1)
+```
+You can call methods defined in `main.sc` from Repl
+
+```shell
+main()
+# => debug from repl!
+```
+
+## Refs
+- [Coursier を使って最速でScalaの開発環境を整える](https://nomadblacky.hatenablog.com/entry/2020/03/22/164815)

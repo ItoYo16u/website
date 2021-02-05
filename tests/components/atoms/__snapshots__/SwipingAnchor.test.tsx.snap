@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SwipingAnchor renders correctly: SwipingAnchor 1`] = `
+<span
+  className="inline-block relative z-0"
+>
+  <a
+    className="underline-anchor"
+    css={
+      Object {
+        "map": undefined,
+        "name": "cqatmp",
+        "next": undefined,
+        "styles": "
+        color: inherit;
+        transition: all 0.4s ease-in-out;
+        &::before {
+          display: block;
+          content: \\"\\";
+          height: 100%;
+          background-color:#63b3ed;;
+          position: absolute;
+          transition: all 0.4s ease-in-out;
+          top: 0;
+          left: 0;
+          right: 100%;
+          z-index: -1;
+          border-radius: 1px;
+        }
+        &:hover {
+          color: black;
+          &::before {
+            left: 0;
+            right: 0;
+          }
+        }
+      ",
+        "toString": [Function],
+      }
+    }
+    href="osaka"
+  >
+    osaka
+  </a>
+</span>
+`;

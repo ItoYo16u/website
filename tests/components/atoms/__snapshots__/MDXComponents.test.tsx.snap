@@ -1,0 +1,227 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`a renders correctly: a 1`] = `
+<span
+  className="inline-block relative z-0"
+>
+  <a
+    className="underline-anchor"
+    css={
+      Object {
+        "map": undefined,
+        "name": "cqatmp",
+        "next": undefined,
+        "styles": "
+        color: inherit;
+        transition: all 0.4s ease-in-out;
+        &::before {
+          display: block;
+          content: \\"\\";
+          height: 100%;
+          background-color:#63b3ed;;
+          position: absolute;
+          transition: all 0.4s ease-in-out;
+          top: 0;
+          left: 0;
+          right: 100%;
+          z-index: -1;
+          border-radius: 1px;
+        }
+        &:hover {
+          color: black;
+          &::before {
+            left: 0;
+            right: 0;
+          }
+        }
+      ",
+        "toString": [Function],
+      }
+    }
+  >
+    てすてす
+  </a>
+</span>
+`;
+
+exports[`blockquote renders correctly: blockquote 1`] = `
+<blockquote
+  className="css-0"
+>
+  てすてす
+</blockquote>
+`;
+
+exports[`code renders correctly: code 1`] = `
+<code>
+  てすてす
+</code>
+`;
+
+exports[`delete renders correctly: delete 1`] = `
+<del
+  className="css-0"
+>
+  てすてす
+</del>
+`;
+
+exports[`em renders correctly: em 1`] = `
+<em
+  className="css-0"
+>
+  てすてす
+</em>
+`;
+
+exports[`h1 renders correctly: h1 1`] = `
+<h1
+  className="css-1nzqhqb"
+>
+  てすてす
+</h1>
+`;
+
+exports[`h2 renders correctly: h2 1`] = `
+<h2
+  className="css-sw2o99"
+>
+  てすてす
+</h2>
+`;
+
+exports[`h3 renders correctly: h3 1`] = `
+<h3
+  className="css-0"
+>
+  てすてす
+</h3>
+`;
+
+exports[`h4 renders correctly: h4 1`] = `
+<h4
+  className="css-0"
+>
+  てすてす
+</h4>
+`;
+
+exports[`h5 renders correctly: h5 1`] = `
+<h5
+  className="css-0"
+>
+  てすてす
+</h5>
+`;
+
+exports[`h6 renders correctly: h6 1`] = `
+<h6
+  className="css-0"
+>
+  てすてす
+</h6>
+`;
+
+exports[`hr renders correctly: hr 1`] = `
+<hr
+  className="css-14dbf95"
+>
+  てすてす
+</hr>
+`;
+
+exports[`img renders correctly: img 1`] = `
+<img
+  className="css-0"
+>
+  てすてす
+</img>
+`;
+
+exports[`inlineCode renders correctly: inlineCode 1`] = `
+<code
+  className="css-0"
+>
+  てすてす
+</code>
+`;
+
+exports[`li renders correctly: li 1`] = `
+<li
+  className="css-0"
+>
+  てすてす
+</li>
+`;
+
+exports[`ol renders correctly: ol 1`] = `
+<ol
+  className="list-decimal py-1 px-2 pl-8"
+>
+  てすてす
+</ol>
+`;
+
+exports[`p renders correctly: p 1`] = `
+<p
+  className="css-r3cwao"
+>
+  てすてす
+</p>
+`;
+
+exports[`pre renders correctly: pre 1`] = `
+<pre
+  className="css-0"
+>
+  てすてす
+</pre>
+`;
+
+exports[`strong renders correctly: strong 1`] = `
+<strong
+  className="css-0"
+>
+  てすてす
+</strong>
+`;
+
+exports[`table renders correctly: table 1`] = `
+<table
+  className="css-0"
+>
+  てすてす
+</table>
+`;
+
+exports[`td renders correctly: td 1`] = `
+<td
+  className="css-0"
+>
+  てすてす
+</td>
+`;
+
+exports[`thematicBreak renders correctly: thematicBreak 1`] = `
+<br
+  className="css-0"
+>
+  てすてす
+</br>
+`;
+
+exports[`tr renders correctly: tr 1`] = `
+<tr
+  className="css-0"
+>
+  てすてす
+</tr>
+`;
+
+exports[`ul renders correctly: ul 1`] = `
+<ul
+  className="list-disc py-1 px-2 pl-8"
+>
+  てすてす
+</ul>
+`;

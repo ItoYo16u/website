@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PostList renders correctly 1`] = `
+<ul
+  className="css-1a6qcq1"
+>
+  <li>
+    <a
+      className="css-1yrbkum"
+      href="/hoge/"
+      onClick={[Function]}
+      onMouseEnter={[Function]}
+    >
+      <div>
+        <h2>
+          <span>
+            Lorem ipsum
+          </span>
+        </h2>
+      </div>
+      <p>
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. 
+      </p>
+    </a>
+  </li>
+</ul>
+`;

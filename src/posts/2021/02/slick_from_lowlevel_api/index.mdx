@@ -1,0 +1,160 @@
+---
+path: "slick-from-lowlevel-api"
+date: "20210201"
+title: "slick from lowlevel api"
+description: "scalaのデータベースアクセスライブラリslickの使い方をlow level apiから説明する"
+status: "public"
+tags: ["scala","slick"]
+---
+# slick tutorial from lowlevel API
+
+scalaの functional データベースアクセスライブラリ[slick](https://scala-slick.org/)の使い方について説明した記事が
+あまりない(codegenしたりPlayと組み合わせて使ったりする例くらいしかない)ので書く.
+
+公式のドキュメントは[こちら](https://scala-slick.org/doc/3.3.3/introduction.html)
+
+解説には、[Ammonite Repl](httpss://ammonite.io)を使う
+
+## Getting started
+まず、ローカル環境でデータベースをサクッと使うためにDockerを使う.
+
+以下のような`docker-compose.yml` ファイルを用意して`docker-compose up`しよう
+
+
+Set up local mysql with `docker-compose.yml`
+
+```yaml
+version: '3.2'
+services:
+  db:
+    image: "mysql:5.7" # または mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    env_file: .env.db
+    ports:
+      - 3306:3306
+    volumes:
+      - ./logs:/var/log/mysql
+```
+and then run `docker-compose up` or `docker-compose up -d`
+
+
+in ammonite REPL
+
+```scala
+import $ivy.`com.typesafe.slick::slick:3.3.3`
+import $ivy.`com.typesafe.slick::slick-hikaricp:3.3.3`
+import $ivy.`mysql:mysql-connector-java:6.0.6`
+// MySQL 5.*はmysql:mysql-connector-java:5.*.* または6.*.*を使う
+// MySQL 8.*はmysql:mysql-connector-java:8.*.* を使う 
+// note: set mysql host and port inside url
+val conn = Database.forURL(
+  url="jdbc:mysql://0.0.0.0:3306/database_name?useSSL=false",
+  user="usernamed",
+  password="password",
+  keepAliveConnection=true
+  ) 
+
+```
+`forDataSource`,`forConfig`の内部でConnection Pool(デフォルトはHikariCP)の設定と、jdbcUrlの組立をしている
+
+
+## Plain sql
+
+slickの一番基本的なAPI. SQL文字列をDBIOActionに変換して利用する. 以下の3種類がある.
+
+- sqlu: 結果のrow countをInt返す
+- sql: 結果を`Vector[TuppleN]`で返す. DBIOActionに変換するため`as[T]`または、`asUpdate`などの句が必要
+- tsql: 型安全なplain sql
+
+sqlで文字列をsplicingする場合、`$`ではなく,`#$`を使う点に注意
+
+sql,sqlu,tsqlはstring interpolatorであり、以下のように使う.
+```scala
+val createCoffees = sqlu"""
+create table coffees (
+  name varchar(255) not null,
+  price double not null,
+  sales integer not null
+)
+"""
+
+conn.run(createCoffees)
+val insertCoffees = sqlu"""
+insert into coffees (name,price,sales) values ("colombian",5.3,0)
+"""
+// or insertCoffees = sql"""...""".asUpdate
+conn.run(insertCoffees)
+
+val price = 9.9
+val tableName = "coffees" 
+val selectCoffees = sql"""
+select c.name,c.price from #$tableName c where c.price < $price
+""".as[(String,Double)]
+"""
+
+conn.run(selectCoffees)
+#=> Vector(("colombian",1.5),("***",2.3),...)
+```
+runの結果は基本的にVector[TuppleN]なので、`map {case (_,_,_,...) => ???}`でタプルから他の型にマッピングできる.
+
+```scala
+case class Person(id:Int,name:String)
+
+Await.result(
+  conn4.run(
+    sql"""
+      select * from account
+    """.as[(Int,String)]
+  ),
+  Duration.Inf
+).map{case (id,name) => Person(id,name)} 
+
+res: Vector[Person] = Vector(Person(id = 1, name = "taro"), Person(id = 2, name = "hanako"))
+```
+
+ちなみにテーブルを作成する`CREATE TABLE ...` は次に説明する`TableQuery[S extends Table[T]]`を用いて`conn.run(tableQuery.schema.create)`を実行しても同様の結果が得られる.
+
+### tableQuery
+定義した`coffees`テーブルをslickのtable queryから操作する
+
+まず、dbのテーブルと対応するクラスを作る
+```scala
+class Coffees(tag:Tag) extends Table[(String,Double,Int)](tag,"coffees"){
+  def name = column[String]("name")
+  def price = column[Double]("price")
+  def sales = column[Int]("sales")
+  def * = (name,price,sales)
+}
+
+val coffees = TableQuery[Coffees]
+
+```
+
+`TableQuery`には`DBIOAction`を生成する様々なメソッドが生えている. APIはコレクション操作によく似ている.
+このDBIOActionが`conn.run`でsqlにマッピングされる.
+
+```scala
+val action = coffees.filter(_.price < 9.9).map(_.name).result
+Await.result(conn.run(action),Duration.Inf)
+#=> res: Seq[String] = Vector("colombian")
+
+```
+
+`Coffees`クラスの`*`メソッドを以下のように修正することで自動的にマッピングすることもできる.
+
+```diff:test.scala
+class Coffees(tag:Tag) extends Table[(String,Double,Int)](tag,"coffees"){
+  def name = column[String]("name")
+  def price = column[Double]("price")
+  def sales = column[Int]("sales")
+- def * = (name,price,sales)
++ def * = (name,price,sales) <> (Coffees.tupled,Coffees.unapply)
+}
+
+val coffees = TableQuery[Coffees]
+
+```
+
+queryの細かい使い方については以下を参考に
+https://scala-slick.org/doc/3.2.0/queries.html

@@ -1,0 +1,52 @@
+---
+path: "hello-gatsby-blog"
+date: "20210202"
+title: "Gatsbyでブログを作った."
+description: "Gatsby,TypeScript,emotionでMdx対応の技術ブログを作った."
+status: "draft"
+tags: ["blog","Gatsby"]
+---
+# About
+
+次のような要件を満たすようなブログが欲しくてGatsbyの定番構成(?)を作った. フォントがぬるっとしていてすこ🥰
+
+日を追うごとに自分が何エンジニアなのか分からなくなってくる.(backendをやりたいはずだったのに...)
+
+デザイン(色味とかレイアウトとか)は `Ze*n` ~~を丸パｋ..~~ 参考にした.
+
+いずれイイ感じにテンプレート化したいと思ってconfigを分けたりカラーテーマを作ったりしている.
+
+要件
+- 見出し生成
+- responsive
+- code highlighiting 💮
+- katex 💮
+- markdown入稿 💮
+- JAMStack 💮
+
+
+
+他の人のつくった薄めの構成をもとにちまちま拡張した. @hpp さんや @AumyF さんのコードを参考にしている.
+
+参考にしたコードはこれ.
+- https://github.com/AumyF/pages-source
+- https://github.com/hppRC/gatsby-starter-hpp 
+- https://github.com/sadnessOjisan/blog.ojisan.io
+
+`markdown`か`mdx`か迷ったが拡張性とかを考えると`mdx`だな、と思ってmdxを採用.
+
+デザインは沼なので無限に終わらない. フロントエンドのこの泥臭い感じはあまり好きじゃない.
+
+
+## Todo
+- `lodash`を入れてあるのでスクロール連動の挙動を追加したい.
+- 関連記事などを記事の末尾に追加したい.
+
+## 所感
+`gatsby`とそのプラグインでだいぶ黒魔術っぽくてｺﾜｲ. フロントエンドつよつよな方は内部処理も**✨完全に理解✨**してるんですかね🙄
+
+> ○○をやりたかったらこのプラグインを追加しましょう😊
+
+みたいな記事ばっか🤔
+コードハイライトの機能はまだいろいろしょぼいのでこのブログの例みたいに拡張したい.
+https://kinniku.engineer/blog/

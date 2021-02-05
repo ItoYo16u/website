@@ -1,0 +1,86 @@
+---
+path: "query-cloudsql-with-slick"
+date: "20210201"
+title: "Query cloudsql with slick"
+description: "scalaのデータベースアクセスライブラリslickでGCPのcloudsqlを操作する"
+status: "public"
+tags: ["scala","slick"]
+---
+# slick with cloudsql
+GCPのCloudSQLをslickで操作するチュートリアル.
+## dependencies
+
+slick本体とコネクションプール、mysqlのコネクタとcloudsqlのSocket Factoryが必要.
+
+```scala
+// slick
+"com.typesafe.slick" %% "slick" % "3.3.3"
+// slickでHikariCPを使うために必要.
+// HikariCPJdbcDataSourceのコンパニオンオブジェクトのファクトリでHikariConfigとHikariDataSourceが初期化される
+"com.typesafe.slick" %% "slickhikaricp" % "3.3.3"
+// mysqlに接続するために必要. jarに含める必要あり.
+"mysql" % "mysql-connector-java" % "8.0.23"
+"com.google.cloud.sql" % "mysql-socket-factory-connector-j-8" % "1.2.0"
+```
+
+## getting started
+
+NOTE
+- `Thread.currentThread().getContextClassLoader()
+.loadClass("com.mysql.cj.api.io.SocketFactory")`が存在する場合、google cloudが提供するSocketFactoryがこっちにcastされそうになってClassCastExceptionになる.
+- GOOGLE_APPLICATION_CREDENTIALSが必要
+
+```scala
+val hconf = new HikariConfig()
+hconf.setJdbcUrl("jdbc:mysql:///dbname")
+hconf.setUsername("username")
+hconf.setPassword("password")
+hconf.addDataSourceProperty("socketFactory","com.google.cloud.sql.mysql.SocketFactory") 
+hconf.addDataSourceProperty("cloudSqlInstance","test")
+hconf.addDataSourceProperty("ipTypes","PUBLIC,PRIVATE") 
+
+// このタイミングでコネクションが張られる. `config`の`seal`が`true`になり、以降`config.set*`メソッドは使えなくなる.
+val ds = new HikariDataSource(config)
+
+// このdsをslickのデータベースラッパーに渡す
+val conn = Database.forDataSource(ds,Some(20))
+```
+
+### application.conf(typesafe config)を使う
+
+sbtプロジェクトの`resources`ディレクトリ以下に`application.conf`ファイルを置いておくと自動で読み込まれる.
+
+sbtプロジェクトの`src/main/resources`ディレクトリに`application.conf,application.json, application.properties, reference.conf`という名の
+ファイルを置いておくとこの順に自動で読み込まれる.
+
+読み込まれた設定は`"namespaceA.namespaceB.key"`という風に参照できる. また、`getInt`,`getString`などのメソッドを使って
+型安全に値を取得できる.
+
+```conf:title=src/main/resources/application.conf
+slick-cloudsql {
+  db {
+    connectionPool = "HikariCP"
+    keepAliveConnection = true
+    url = "jdbc:mysql:///"${?CLOUDSQL_DB}
+    user = ${?CLOUDSQL_USER}
+    password =${?CLOUDSQL_PASSWORD}
+    # datasource の設定. addDataSourcePropertyでHikariConfigにセットされる
+    properties = {
+      socketFactory = "com.google.cloud.sql.mysql.SocketFactory"
+      cloudSqlInstance = ${?CLOUDSQL_INSTANCE}
+      ipTypes = ${?CLOUDSQL_IP_TYPES}
+    }
+  }
+}
+```
+
+```scala:title=Main.scala
+class Main extends App {
+  val cloudSQLConnection = Database.forConfig("slick-cloudsql.db")
+  // do something
+  cloudSQLConnection.close
+}
+```
+application.confの設定値とデフォルト値を反映したコネクションがつくられる.
+
+## Database.forConfigの処理を追ってみる

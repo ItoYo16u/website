@@ -1,0 +1,336 @@
+---
+path: "about-blog"
+date: "20210202"
+title: "About this site"
+description: "about blog"
+status: "draft"
+tags: ["Gatsby","blog"]
+---
+import { Slider } from "../../../../components/molecules/Slider"
+import { AnyImage } from "../../../../components/common/media/anyImage"
+
+
+# About this site
+
+Inspired by
+- https://github.com/AumyF/pages-source
+- https://github.com/hppRC/gatsby-starter-hpp 
+- https://github.com/sadnessOjisan/blog.ojisan.io
+
+## Features
+
+- Blog features(Post,Image,theme,Code Highlighiting,Math,embed,rich link(wip),Tag,Pagenation)
+- useful components set
+- Jamstack
+- SEO frendly
+- Mdx: you can use React Component inside markdown
+
+You can use this blog template at https://github.com/
+
+
+### Math Support
+
+```math:title=sample
+$$
+a^2 + b^2 = c^2
+$$
+
+$$
+
+  \int_a^b f(x) dx
+$$
+```
+
+$$
+a^2 + b^2 = c^2
+$$
+
+$$
+
+  \int_a^b f(x) dx
+$$
+
+
+### Mdx support
+For example, you can control text separation by the slider bellow. 
+
+```markdown:title=about.mdx
+
+## this is markdown file
+
+import {Slider} from "path/to/Slider"
+<Slider/>
+```
+
+<Slider/>
+
+
+
+### Quote
+
+```markdown
+> something awesome!
+>
+> by someone
+```
+
+> something awesome!
+>
+> by someone
+
+Edit `src/styles/post.css` to change quote style.
+
+
+
+```css:title=post.css
+blockquote {
+  background: rgba(210,210,210,0.3);
+  border-left: 4px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 1em 10px;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+```
+
+## TODO
+- [x] ~~quote~~
+- [x] ~~seo~~
+- [x] ~~fix about page~~
+- [x] ~~inline code block highlighiting~~
+- [ ] night mode
+- [ ] add optional drawer component
+- [ ] add google map component
+- [ ] add category
+- [ ] add layout scaffold(optional sidebar,persistent side menu,optional modal,header theme,footer theme)
+- [ ] add animation components(fade in,slide in, zoom in)
+- [x] ~~add google analytics~~
+- [ ] add and configure linter
+- [ ] add line highlighting
+- [ ] add embeded components(twitter,youtube,instagram)
+- [x] ~~add katex~~
+- [ ] add pagenation in index page
+- [x] ~~show code block title~~
+- [x] ~~change link style~~
+- [ ] generate ogp
+- [x] ~~image~~
+- [ ] add image link component
+- [ ] add rich link component
+
+## Setup
+
+- ubuntu
+
+```shell
+nodebrew install v14.15.4
+nodebrew use v14.15.4
+npm update -g npm
+node -v 
+# v14.15.4
+npm -v
+# 6.14.11
+```
+
+
+```shell
+git clone path/to/github/repository
+cd repository
+npm install
+npm run develop # start gatsby develop server. Watch file changes and auto reload.
+```
+
+
+
+
+# How to Customize
+
+## Add page
+add \*.tsx file inside src/pages directory.
+## Add article
+Add file inside `src/posts/*` and graphql automatically finds \*.mdx and \*.md.
+```shell
+mkdir -p src/posts/<dirname>/<dirname>/*.mdx
+```
+
+### Add private article
+
+set status in frontmatter to `private`.
+
+Note: `status` is `public`,`draft` or `private`.
+
+If you set `draft` status, the article is visible but warning is displayed at the top of artcle.
+
+```markdown:title=frontmatter
+---
+path: "about-blog"
+date: "yyyymmdd"
+title: "About Blog"
+description: "about blog"
+status: "private"
+tags: ["blog"]
+---
+```
+
+### Add image
+
+add image(\*.png,\*.jpg) inside `src/posts/` directory or `src/images/` directory.
+
+If you want to use another directory to store image files, setup path 
+with `gatsby-source-filesystem` in `gatsby-config.js`
+
+```diff:gatsby-config.js
+  {
+      // path to posts dirctory. used in graphql query.
+      // filterable with filter: sourceInstanceName
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `posts`,
+        path: `${__dirname}/src/posts`,
+      },
+    },
++  {
++    resolve: `gatsby-source-filesystem`,
++   options: {
++      name: `your_favorite_path_name`,
++     path: `<your favorite path>`,
++   },
++ },
+```
+
+### Show image in mdx
+
+- src/posts/
+  - article_01/
+    - index.md
+    - image.png
+
+in `index.md`,
+
+```markdown
+![alt](./image.png)
+```
+
+### Configure image query
+
+See `src/hooks/useAnyImage.ts`
+
+### show video in mdx
+
+- youtube
+- niconico: use `embededNiconicoPlayer` component
+- vimeo
+
+### Show code sandbox in mdx(WIP)
+
+wip
+
+### Edit color scheme(WIP)
+
+edit `src/styles/ColorScheme.ts` and `src/styles/StaticStyles.ts`
+
+### SEO
+
+Edit SEO component at `src/components/common/functionality` and `config/site.js`.
+
+Query is defined at `src/hooks/useSiteMetadata.ts`
+
+```javascript:title=site.js
+module.exports = {
+  siteTitle: "your site name here",
+  siteTitleAlt: "your site name alt here",
+  siteDescription: "your site description here, these params are default params for meta tag such as title,description",
+  url: "https://example.com",
+  siteUrl: "https://example.com/",
+  siteLanguage: "ja",
+  author: "your name or company",
+  backgroundColor: "#1A202C",
+  themeColor: "#000000",
+  favicon: "static/favicon.png",
+  social: {
+    twitter: "https://twitter.com/<your twitter id>",
+    github: "https://github.com/<your github id>",
+    qiita: null
+  }
+}
+
+```
+
+Set analytics ids in `gatsby-config.js`
+
+```javascript:gatsby-config.js
+    {
+      resolve: `gatsby-plugin-google-gtag`,
+      options: {
+        trackingIds: [
+          "GA-TRACKING_ID", // Google Analytics / GA
+          "AW-CONVERSION_ID", // Google Ads / Adwords / AW
+          "DC-FLOODIGHT_ID", // Marketing Platform advertising products (Display & Video 360, Search Ads 360, and Campaign Manager)
+        ],
+      },
+    },
+```
+
+#### Generate site map
+Gatsby automatically generates `sitemap.xml` inside public directory.
+
+#### Generate rss
+Gatsby automatically generates `rss.xml` inside public directory.
+
+wip
+
+### Code Highlighting
+
+#### change theme
+
+configure theme in `src/components/atoms/MDXComponent.tsx`
+
+```typescript
+import theme from 'prism-react-renderer/themes/<your_favorite_theme>';
+// ...
+<Highlight theme={theme}>
+
+```
+
+#### add highlight for pre-bundled languages
+
+## bugs
+
+- Graphql Document Error Unknown Fragment, when query images 
+
+## Note
+
+### 01
+Currently, it seems that prism-react-renderer is not actively updated.
+
+### 02
+`gatsby-remark-katex` does not work with mdx plugin.
+
+Use `katex`,`remark-math`,`remark-html-katex` instead.
+
+Note: Make sure to install version 3.* of remark-math. 
+For more detail, see https://github.com/gatsbyjs/gatsby/issues/20538#issuecomment-721845436
+
+```javascript:title=gatsby-browser.js
+require(`katex/dist/katex.min.css`)
+```
+
+```javascript:title=gatsby-config.js
+ {
+      resolve: `gatsby-plugin-mdx`,
+      options: {
+        extensions: [`.mdx`],
+        remarkPlugins: [
+          require('remark-math'),
+          require('remark-html-katex'),
+        ],
+        gatsbyRemarkPlugins: [
+          {
+            resolve: `gatsby-remark-code-titles`,
+            options: {
+              className: 'gatsby-code-title'
+            },
+          },
+          {
+            resolve: `gatsby-remark-images`,
+```
+
+See also https://github.com/gatsbyjs/gatsby/issues/6648#issuecomment-516722534

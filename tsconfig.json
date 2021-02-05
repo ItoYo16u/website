@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "jsx": "react",
+    "esModuleInterop": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "exclude": [  
+    "node_modules"  
+  ],
+  "include": [
+    "./src/**/*"
+  ]
+}

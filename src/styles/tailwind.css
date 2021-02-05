@@ -1,0 +1,12 @@
+@tailwind base;
+body {
+  margin: 0;
+  font-family: "Roboto","Noto Sans JP", "sans-serif";
+  touch-action: manipulation;
+}
+pre > code{
+  letter-spacing: 0
+}
+
+@tailwind components;
+@tailwind utilities;

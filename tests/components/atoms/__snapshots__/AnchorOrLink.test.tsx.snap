@@ -1,0 +1,95 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AnchorOrLink renders correctly: /hoge 1`] = `
+<a
+  href="/hoge"
+  onClick={[Function]}
+  onMouseEnter={[Function]}
+>
+  /hoge
+</a>
+`;
+
+exports[`AnchorOrLink renders correctly: /hoge/ 1`] = `
+<a
+  href="/hoge/"
+  onClick={[Function]}
+  onMouseEnter={[Function]}
+>
+  /hoge/
+</a>
+`;
+
+exports[`AnchorOrLink renders correctly: /hoge/fuga/ 1`] = `
+<a
+  href="/hoge/fuga/"
+  onClick={[Function]}
+  onMouseEnter={[Function]}
+>
+  /hoge/fuga/
+</a>
+`;
+
+exports[`AnchorOrLink renders correctly: google.com 1`] = `
+<a
+  href="google.com"
+>
+  google.com
+</a>
+`;
+
+exports[`AnchorOrLink renders correctly: google.com/ 1`] = `
+<a
+  href="google.com/"
+>
+  google.com/
+</a>
+`;
+
+exports[`AnchorOrLink renders correctly: hoge 1`] = `
+<a
+  href="hoge"
+>
+  hoge
+</a>
+`;
+
+exports[`AnchorOrLink renders correctly: hoge/ 1`] = `
+<a
+  href="hoge/"
+>
+  hoge/
+</a>
+`;
+
+exports[`AnchorOrLink renders correctly: hoge/fuga 1`] = `
+<a
+  href="hoge/fuga"
+>
+  hoge/fuga
+</a>
+`;
+
+exports[`AnchorOrLink renders correctly: hoge/fuga/ 1`] = `
+<a
+  href="hoge/fuga/"
+>
+  hoge/fuga/
+</a>
+`;
+
+exports[`AnchorOrLink renders correctly: https://google.com 1`] = `
+<a
+  href="https://google.com"
+>
+  https://google.com
+</a>
+`;
+
+exports[`AnchorOrLink renders correctly: https://google.com/ 1`] = `
+<a
+  href="https://google.com/"
+>
+  https://google.com/
+</a>
+`;
