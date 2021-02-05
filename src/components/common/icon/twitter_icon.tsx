@@ -1,10 +1,11 @@
 import React, { ReactChild } from "react"
-import { Link } from "gatsby"
 import styled from "@emotion/styled"
 import { Stylable } from "../../../utils/Components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTwitter } from "@fortawesome/free-brands-svg-icons"
 import { cs } from "../../../styles"
+library.add(faTwitter)
 
 type TwitterIconProps = Stylable & {
   twitterId: string
