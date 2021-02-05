@@ -63,7 +63,6 @@ hr {
  */
 
 pre {
-  font-family: monospace, monospace; /* 1 */
   font-size: 1em; /* 2 */
 }
 
@@ -105,12 +104,6 @@ strong {
  * 2. Correct the odd `em` font sizing in all browsers.
  */
 
-code,
-kbd,
-samp {
-  font-family: monospace, monospace; /* 1 */
-  font-size: 1em; /* 2 */
-}
 
 /**
  * Add the correct font size in all browsers.
@@ -225,6 +218,9 @@ button:-moz-focusring,
   outline: 1px dotted ButtonText;
 }
 
+figure {
+  margin: 0;
+}
 /**
  * Correct the padding in Firefox.
  */

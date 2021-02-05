@@ -1,6 +1,8 @@
 * {
-  font-family: 'Noto Sans JP', sans-serif,-apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+  font-family: "Roboto",'Noto Sans JP', sans-serif,-apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
     Meiryo, sans-serif;
+    border-width:0;
+    background: transparent;
 }
 *, ::before,::after {
   box-sizing: border-box;

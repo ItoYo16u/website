@@ -1,4 +1,5 @@
 import { css } from "@emotion/core"
+import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faChevronLeft,
   faChevronRight,
@@ -7,9 +8,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link } from "gatsby"
 import React from "react"
 import { DeepReadonly } from "ts-essentials"
-import { cs, textColor } from "../../styles"
+import { textColor } from "../../styles"
 import { Post } from "../../utils/Post"
-
+library.add(faChevronLeft,faChevronRight)
 type adjoining = Pick<Post, "path" | "title"> | null | undefined
 
 export type PrevNextLinkProps = DeepReadonly<{
