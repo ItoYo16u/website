@@ -2,7 +2,7 @@ import { Background } from "./Background"
 import React from "react"
 import { Meta } from "./templates"
 import styled from "@emotion/styled"
-import { ss, mq } from "../../styles"
+import { ss } from "../../styles"
 import { SubHeader } from "../layout/sub_header"
 import { Layout } from "../layout/layout"
 

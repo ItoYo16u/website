@@ -14,7 +14,7 @@ const Component: React.FC<IPassedProps> = ({ css, children, className }) => (
 )
 
 const StyledComponent = styled(Component)`
-  font-size: 24px;
+  font-size: 28px;
   margin-top: 20px;
   padding: 4px 0px;
   color: grey;

@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link } from "gatsby"
 import React from "react"
 import { DeepReadonly } from "ts-essentials"
+import { cs, textColor } from "../../styles"
 import { Post } from "../../utils/Post"
 
 type adjoining = Pick<Post, "path" | "title"> | null | undefined
@@ -50,14 +51,16 @@ export const PrevNextLinkButton: React.FC<PrevNextLinkButtonProps> = (
 ) => {
   return (
     <div
-      className={`transition w-1/2 backdrop-blur text-90 ${
-        props.enabled
-          ? "bg-grey-900 hover:bg-blue-800  hover:text-gray-300"
-          : "text-gray-400"
-      }`}
       css={css`
+        width: 50%;
+        color: ${props.enabled ? `${textColor.Plain}`: `${textColor.Pale}`};
+        transition: all 0.2s ease-in;
+        :hover {
+          ${props.enabled ? `opacity: 0.5;
+          color: #FFF;
+          background-color: rgba(90,90,90,0.5);`:""}
+        }
         &:nth-of-type(odd) * div {
-          text-align: left;
           svg.rightChevron {
             display: none;
           }
@@ -81,7 +84,7 @@ export const PrevNextLinkButton: React.FC<PrevNextLinkButtonProps> = (
 
 const LinkOrSpan: React.FC<PrevNextLinkButtonProps> = (props) => {
   return props.enabled ? (
-    <Link aria-label={`link to ${props.to}`} className="block py-2 px-3 h-full" to={`/${props.to}/`}>
+    <Link aria-label={`link to ${props.to}`} className="block py-2 px-3" to={`/${props.to}/`}>
       {props.children}
     </Link>
   ) : (

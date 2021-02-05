@@ -21,7 +21,7 @@ export const ss: DeepReadonly<{ [index in stylekeys]: SerializedStyles }> = {
     background-color: ${cs.background};
   `,
   border: css`
-    border: none solid ${cs.border};
+    border: none;
   `,
   text: css`
     color: ${cs.text};

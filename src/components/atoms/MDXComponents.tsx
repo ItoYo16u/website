@@ -71,7 +71,7 @@ export const MDXComponents: DeepReadonly<Required<Components>> = {
   hr: styled.hr`
     margin-top: 0.75rem;
     margin-bottom: 0.75rem;
-    border: 1px solid ${cs.border};
+    border: 1px solid ${textColor.Pale};
   `,
   img: styled.img``,
   inlineCode: styled.code``,

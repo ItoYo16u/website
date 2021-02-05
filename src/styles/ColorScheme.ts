@@ -17,7 +17,7 @@ export const cs: DeepReadonly<
   cardBackground: "#FFFFFF",
   primaryAccent: "#2196f3",
   secondaryAccent: "#f6e05e",
-  text: "#888888",
+  text: "#5f5d51",
   border: "#404040",
 }
 
@@ -31,8 +31,8 @@ type Ink =
 export const textColor: DeepReadonly<{
     [index in Ink]: string
 }> = {
-  "Darker": "#222222",
-  "Dark": "#404040",
+  "Darker": "#404040",
+  "Dark": "#484242",
   "Light": "#999999",
   "Plain":"#888888",
   "Pale":"#BBBBBB"

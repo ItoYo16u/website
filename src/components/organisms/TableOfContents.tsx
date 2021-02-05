@@ -42,7 +42,6 @@ export const Plain: PlainComponent<TOCComponentProps> = ({
 )
 
 export const Styled = styled(Plain)`
-  font-size: 0.9rem;
   background-color: rgba(220, 220, 220, 0.3);
   border-radius: 0.25rem;
   padding: 16px;
