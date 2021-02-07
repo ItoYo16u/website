@@ -9,6 +9,7 @@ import { LinkText } from "../common/typography/link_text"
 import Highlight, { defaultProps, Prism } from "prism-react-renderer"
 ;(typeof global !== "undefined" ? global : window).Prism = Prism
 require("prismjs/components/prism-scala")
+require("prismjs/components/prism-dart")
 require("prismjs/components/prism-diff")
 
 type Elm = JSX.IntrinsicElements
