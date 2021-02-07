@@ -88,7 +88,7 @@ const Component: React.FC<IProps> = (props) => {
             <h2 className={"subtitle"}>About Blog</h2>
             <div className="section">
               <p>よくあるGatsby,TypeScript,MdxのJAMStackです. Code Highlightingと数式に対応済み.</p>
-              詳しくはこちら→<Link to={"/about-blog"}>About Blog</Link>
+              詳しくはこちら→<Link to={"/hello-gatsby-blog"}>About Blog</Link>
             </div>
           </div>
           {/*<div className={"workExperience"}>
