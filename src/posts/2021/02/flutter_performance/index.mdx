@@ -11,12 +11,27 @@ tags: ["dart","Flutter"]
 
 ## memory
 
+dev toolsのmemory欄からメモリのパフォーマンスを可視化できる.
+snapshotからheapmapを生成してインスタンスごとのメモリ使用量を確認することもできる.
+
 文字列の結合
 
 - `Iterable.join`は内部で`StringBuffer`を使って文字列を組み立てているのでパフォーマンス上の大きな差はない.
 - 短い固定長の文字列のstring interpolationと`StringBuffer`は大差ない. 長い文字列の結合は`+`やinterpolationではなく`String buffer`を使う.
 
 ## rendering
+
+Flutterでは,IntelliJやVS Codeのdev toolsからperformance overlayをOnにするか、MaterialAppの`showPerformanceOverlay`プロパティを
+`true`にすることでアプリの画面にレンダリングのパフォーマンス図を表示できる.
+
+この図の色が緑なら問題ないが赤の場合はパフォーマンス改善の余地がある.
+
+図の上側がGPUレンダリング、下側がUIレンダリングのパフォーマンスである.
+
+UIのrenderingはIDEでリビルドをチェックすれば比較的簡単に原因を特定できる.
+
+GPUレンダリングのパフォーマンス悪化は、`saveLayer`が呼ばれたり、画像のキャッシュや
+ウィジェットツリーが複雑すぎる場合に起きる.
 
 ### UI rendering
 
@@ -29,5 +44,11 @@ tags: ["dart","Flutter"]
 `opacity`, `Clip`,`shaderMask`などは`saveLayer`を呼ぶのでコストが高い. 
 `Clip`を使う場合は`clipBehavior`を`hardEdge`にしてanti aliasを抑えることで少しパフォーマンスがましになる.
 
+
+単純なUIの変更は`ClipRect`や`ClipRRect`よりも`Container`などの
+ウィジェットの`BoxDecoration`プロパティを操作するほうが望ましい.
+
 透過した`bottomAppBar`と`ListView`の組み合わせは`saveLayer`が頻繁に呼ばれるので
-そのUIにこだわりがあるわけではないなら避けたほうがいい.
+そのUIにこだわりがあるわけではないなら避けたほうがいい. 
+
+透過したUIが必要ならば、そのウィジェットはツリーのなるべく下の方に配置すべきである.
