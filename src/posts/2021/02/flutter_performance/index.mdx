@@ -1,0 +1,33 @@
+---
+path: "flutter-performance"
+date: "20210206"
+title: "improve flutterperformance"
+description: "wip."
+status: "draft"
+tags: ["dart","Flutter"]
+---
+
+# Flutter Performance
+
+## memory
+
+文字列の結合
+
+- `Iterable.join`は内部で`StringBuffer`を使って文字列を組み立てているのでパフォーマンス上の大きな差はない.
+- 短い固定長の文字列のstring interpolationと`StringBuffer`は大差ない. 長い文字列の結合は`+`やinterpolationではなく`String buffer`を使う.
+
+## rendering
+
+### UI rendering
+
+`selector`を使ったり リビルドが多いウィジェットをツリーの下層に配置することで無駄な再レンダリングを避ける.
+
+`ListView.builder`や`SliverList`の`delegate`を使ってlazyにリストの要素を生成する.
+
+### GPU rendering
+
+`opacity`, `Clip`,`shaderMask`などは`saveLayer`を呼ぶのでコストが高い. 
+`Clip`を使う場合は`clipBehavior`を`hardEdge`にしてanti aliasを抑えることで少しパフォーマンスがましになる.
+
+透過した`bottomAppBar`と`ListView`の組み合わせは`saveLayer`が頻繁に呼ばれるので
+そのUIにこだわりがあるわけではないなら避けたほうがいい.

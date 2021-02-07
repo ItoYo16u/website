@@ -8,13 +8,9 @@ tags: ["blog","Gatsby"]
 ---
 # About
 
-次のような要件を満たすようなブログが欲しくてGatsbyの定番構成(?)を作った.
+要件を満たすようなブログが欲しくてGatsbyの定番構成(?)を作った. 
 
-日を追うごとに自分が何エンジニアなのか分からなくなってくる.(backendをやりたいはずだったのに...)
-
-デザイン(色味とかレイアウトとか)は `Ze*n` ~~をパｋ..~~ 参考にした.
-
-いずれイイ感じにテンプレート化したいと思ってconfigを分けたりカラーテーマを作ったりしている.
+ScalaやFlutterを中心にしつつ技術全般をつらつらと書く予定.
 
 要件
 - 見出し生成
@@ -24,16 +20,33 @@ tags: ["blog","Gatsby"]
 - markdown入稿 💮
 - Jamstack 💮
 
+デザイン(色味やレイアウト)は `Ze*n` ~~をパｋ..~~ 参考にして`@emotion`で書いた. `emotion`は他のcss in js 
+フレームワーク(tailwindやchakra)と比べて、cssを理解していれば素直にスタイルを記述できるので良い. 
+また、コンポーネント単位でスタイルを当てる感覚が最近しばしば書いている`Flutter`と似ているのもやりやすい.
+
+※ Flutterでは以下のようにスタイルを当てる
+
+```dart:title=sample.dart
+Container(
+  alignment: Alignment.center,
+  padding: EdgeInsets.all(4),
+  color: Colors.black,
+  child: child  
+)
+```
+
+いずれテンプレート化したいと思ってconfigを分けたりカラーテーマを作ったりしている.
 
 
-他の人のつくった薄めの構成をもとにちまちま拡張した. @hpp さんや @AumyF さんのコードを参考にしている.
+片手間のブログを0から作るのは時間の無駄なので,他の人のつくった薄めの構成をもとにちまちま拡張した.
+@hpp さんや @AumyF さんのコードを参考にしている.
 
 参考にしたコードはこれ.
 - https://github.com/AumyF/pages-source
 - https://github.com/hppRC/gatsby-starter-hpp 
 - https://github.com/sadnessOjisan/blog.ojisan.io
 
-`markdown`か`mdx`か迷ったが拡張性とかを考えると`mdx`だな、と思ってmdxを採用.
+`markdown`か`mdx`か迷ったが拡張性とかを考えるて`mdx`を採用した. 
 
 デザインは沼なので無限に終わらない. フロントエンドのこの泥臭い感じはあまり好きじゃない.
 

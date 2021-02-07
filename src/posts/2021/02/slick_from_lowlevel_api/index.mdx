@@ -8,17 +8,16 @@ tags: ["scala","slick"]
 ---
 # slick tutorial from lowlevel API
 
-scalaの functional データベースアクセスライブラリ[slick](https://scala-slick.org/)の使い方について説明した記事が
-あまりない(codegenしたりPlayと組み合わせて使ったりする例くらいしかない)ので書く.
+scalaの non-blockingでfunctionalなデータベースアクセスライブラリ[slick](https://scala-slick.org/)の使い方について説明する.
 
 公式のドキュメントは[こちら](https://scala-slick.org/doc/3.3.3/introduction.html)
 
-解説には、[Ammonite Repl](httpss://ammonite.io)を使う
+解説には、[Ammonite REPL](httpss://ammonite.io)を使う
 
 ## Getting started
 まず、ローカル環境でデータベースをサクッと使うためにDockerを使う.
 
-以下のような`docker-compose.yml` ファイルを用意して`docker-compose up`しよう
+以下のような`docker-compose.yml` ファイルを用意して`docker-compose up`する.
 
 
 Set up local mysql with `docker-compose.yml`
@@ -56,12 +55,13 @@ val conn = Database.forURL(
   ) 
 
 ```
+Databaseクラスには`forDataSource`や`forConfig`メソッドも生えている.
 `forDataSource`,`forConfig`の内部でConnection Pool(デフォルトはHikariCP)の設定と、jdbcUrlの組立をしている
 
 
 ## Plain sql
 
-slickの一番基本的なAPI. SQL文字列をDBIOActionに変換して利用する. 以下の3種類がある.
+slickの基本的なAPI. SQL文字列をDBIOActionに変換して利用する. 以下の3種類がある.
 
 - sqlu: 結果のrow countをInt返す
 - sql: 結果を`Vector[TuppleN]`で返す. DBIOActionに変換するため`as[T]`または、`asUpdate`などの句が必要
@@ -96,7 +96,7 @@ select c.name,c.price from #$tableName c where c.price < $price
 conn.run(selectCoffees)
 #=> Vector(("colombian",1.5),("***",2.3),...)
 ```
-runの結果は基本的にVector[TuppleN]なので、`map {case (_,_,_,...) => ???}`でタプルから他の型にマッピングできる.
+``conn.run``はVector[TuppleN]を返すので、`map {case (_,_,_,...) => ???}`を使ってタプルから他の型にマッピングできる.
 
 ```scala
 case class Person(id:Int,name:String)
