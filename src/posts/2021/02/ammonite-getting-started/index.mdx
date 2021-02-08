@@ -8,6 +8,9 @@ tags: ["scala","ammonite"]
 ---
 
 # getting started with ammonite
+
+※ ammoniteの環境構築について知りたい方は install coursier まで読み飛ばしてください
+
 [ammonite](https://ammonite.io/)をご存知だろうか. 
 
 ammoniteは、ScalaのモダンなREPL、Scalaスクリプトを書けるScript runner(`sbt`を使うよりも簡単にセットアップできる)、ファイルシステムやshellの総称.
@@ -203,7 +206,7 @@ import $ivy.{
 }
 ```
 
-### Debug code with ammonite Repl
+### Debug code with ammonite REPL
 
 ``amm --predef [file_name].sc`` と呼び出すことで、`[file_name].sc`で定義したメソッドがreplから呼び出せる.
 また、repl内から`import $file.[file_name]` とコマンドをうっても呼び出せる.

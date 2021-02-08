@@ -11,6 +11,13 @@ GCPのCloudSQLをslickで操作するチュートリアル.
 
 このページではscalaのデータベースアクセスライブラリslickを使ってGCPのcloudsqlを操作する方法を説明します.
 
+## preparation
+
+1. GCPのコンソールからcloud sqlインスタンスを作成する(今回はmysql 8.0)
+2. コンソールの左パネルからデータベースを選択し新しく適当な名前のデータベースを作成する
+3. cloud sql admin apiを有効化する
+4. IAMと管理から適当なサービスアカウントをつくり、cloudSQLクライアントまたは編集者権限を付与しそのJson(xxx.json)をダウンロードして適当なパスに配置する
+5. 環境変数を設定する. `export GOOGLE_APPLICATION_CREDENTIALS=path/to/xxx.json` 
 ## dependencies
 
 slick本体とコネクションプール、mysqlのコネクタとcloudsqlのSocket Factoryが必要.
@@ -42,7 +49,6 @@ hconf.addDataSourceProperty("socketFactory","com.google.cloud.sql.mysql.SocketFa
 hconf.addDataSourceProperty("cloudSqlInstance","test")
 hconf.addDataSourceProperty("ipTypes","PUBLIC,PRIVATE") 
 
-// このタイミングでコネクションが張られる. `config`の`seal`が`true`になり、以降`config.set*`メソッドは使えなくなる.
 val ds = new HikariDataSource(config)
 
 // このdsをslickのデータベースラッパーに渡す
@@ -78,6 +84,7 @@ slick-cloudsql {
 ```
 
 ```scala:title=Main.scala
+import slick.driver.MySQLDriver.api._
 class Main extends App {
   val cloudSQLConnection = Database.forConfig("slick-cloudsql.db")
   // do something
@@ -85,5 +92,33 @@ class Main extends App {
 }
 ```
 application.confの設定値とデフォルト値を反映したコネクションがつくられる.
+
+
+application.confを使わない場合は以下のようにする.
+
+```scala:title=another_pattern.scala
+import scala.collection.JavaConverters._
+import slick.driver.MySQLDriver.api._
+
+
+val configMap = Map(
+  "connectionPool"->"HikariCP",
+  "keepAliveConnection"->true,
+  "user"->"root",
+  "password"->"db作成時に表示されたパスワード",
+  "url"->"jdbc:mysql:///<作成したデータベース名>",
+  "properties"-> Map(
+    "socketFactory"->"com.google.cloud.sql.mysql.SocketFactory",
+    "cloudSqlInstance"->"<project>:<region>:<db-instance-name>",
+    "ipTypes"->"PUBLIC,PRIVATE").asJava
+  ).asJava
+
+val conf = ConfigFactory.parseMap(configMap)
+
+val conn = Database.forConfig("",conf)
+
+
+```
+
 
 ## Database.forConfigの処理を追ってみる
