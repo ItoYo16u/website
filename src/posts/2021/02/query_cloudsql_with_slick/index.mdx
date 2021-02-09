@@ -123,6 +123,62 @@ val conn = Database.forConfig("",conf)
 
 ## Database.forConfigの処理を追ってみる
 
+`Database.forConfig`を呼ぶと、`JdbcBackend.scala`の`forConfig`が呼ばれる.
+
+`path`か`config`で渡した設定は`JdbcDataSource.forConfig`で使われるようだ.
+
+`path.isEmpty`のときに引数で渡したConfigが使われる.
+
+pathではなくconfigで指定したい時に`forConfig(config:Config,driver:Driver=null)` 
+という風に書きたいのだがそういうインターフェースはないのはなぜだろう...🤔 PR出してみようか...
+
+```scala:title=JdbcBackend.scala
+    def forConfig(path: String, config: Config = null, driver: Driver = null,
+                  classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader): Database = {
+      val initializedConfig = if(config eq null) ConfigFactory.load(classLoader) else config
+      val usedConfig = if(path.isEmpty) initializedConfig else initializedConfig.getConfig(path)
+      val source = JdbcDataSource.forConfig(usedConfig, driver, path, classLoader)
+      val poolName = usedConfig.getStringOr("poolName", path)
+      val numThreads = usedConfig.getIntOr("numThreads", 20)
+      val maxConnections = source.maxConnections.getOrElse(numThreads)
+      val registerMbeans = usedConfig.getBooleanOr("registerMbeans", false)
+      val executor = AsyncExecutor(poolName, numThreads, numThreads, usedConfig.getIntOr("queueSize", 1000),
+        maxConnections, registerMbeans = registerMbeans)
+      forSource(source, executor)
+    }
+```
+
+ちなみに`path`は`application.conf`の設定. 例えば以下のような設定があったら`slick.mysql`になる.
+
+
+```conf
+slick  {
+  mysql {
+    ここに設定内容を書く
+  }
+}
+```
+
+`JdbcDataSource.forConfig`をみてみると,ここで`forConfig`インターフェースを備えたDataSourceのファクトリが生成されて、
+そのファクトリをつかってDataSourceをつくっている. デフォルトは`HikariCPJdbcDataSource`.
+
+```scala:title=JdbcDataSource.scala
+  def forConfig(c: Config, driver: Driver, name: String, classLoader: ClassLoader): JdbcDataSource = {
+    def loadFactory(name: String): JdbcDataSourceFactory = {
+      val clazz = classLoader.loadClass(name)
+      clazz.getField("MODULE$").get(clazz).asInstanceOf[JdbcDataSourceFactory]
+    }
+    val pf: JdbcDataSourceFactory = c.getStringOr("connectionPool", "HikariCP") match {
+      case "disabled" => DataSourceJdbcDataSource
+      case "HikariCP" => loadFactory("slick.jdbc.hikaricp.HikariCPJdbcDataSource$")
+      case "slick.jdbc.HikariCPJdbcDataSource" =>
+        logger.warn("connectionPool class 'slick.jdbc.HikariCPJdbcDataSource$' has been renamed to 'slick.jdbc.hikaricp.HikariCPJdbcDataSource$'")
+        loadFactory("slick.jdbc.hikaricp.HikariCPJdbcDataSource$")
+      case name => loadFactory(name)
+    }
+    pf.forConfig(c, driver, name, classLoader)
+  }
+```
 
 
 # 参考
