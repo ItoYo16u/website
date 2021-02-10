@@ -16,7 +16,7 @@ snapshotからheapmapを生成してインスタンスごとのメモリ使用�
 
 文字列の結合
 
-- `Iterable.join`は内部で`StringBuffer`を使って文字列を組み立てているのでパフォーマンス上の大きな差はない.
+- `Iterable<String>`を結合する場合、`Iterable.join`は内部で`StringBuffer`を使って文字列を組み立てているのでパフォーマンス上の大きな差はない.
 - 短い固定長の文字列のstring interpolationと`StringBuffer`は大差ない. 長い文字列の結合は`+`やinterpolationではなく`String buffer`を使う.
 
 ## rendering
@@ -39,16 +39,31 @@ GPUレンダリングのパフォーマンス悪化は、`saveLayer`が呼ばれ
 
 `ListView.builder`や`SliverList`の`delegate`を使ってlazyにリストの要素を生成する.
 
+#### ListViewが重い
+
+`ListView`の`cacheExtent`プロパティを適切に設定するといいかもしれない.
+
+cacheExtentは事前にレンダリングしておく範囲のピクセル数. 
+
+`cacheExtent`+画面に見えている要素+`cacheExtent` の範囲でウィジェットがレンダリングされる.
+
 ### GPU rendering
 
+#### opacity,clip,shaderMask
 `opacity`, `Clip`,`shaderMask`などは`saveLayer`を呼ぶのでコストが高い. 
+
+`BackDropFilter`を使う場合も同様である.
+
 `Clip`を使う場合は`clipBehavior`を`hardEdge`にしてanti aliasを抑えることで少しパフォーマンスがましになる.
 
 
 単純なUIの変更は`ClipRect`や`ClipRRect`よりも`Container`などの
 ウィジェットの`BoxDecoration`プロパティを操作するほうが望ましい.
 
-透過した`bottomAppBar`と`ListView`の組み合わせは`saveLayer`が頻繁に呼ばれるので
+例えば、透過した`bottomAppBar`と`ListView`の組み合わせは`saveLayer`が頻繁に呼ばれるので
 そのUIにこだわりがあるわけではないなら避けたほうがいい. 
 
 透過したUIが必要ならば、そのウィジェットはツリーのなるべく下の方に配置すべきである.
+
+
+#### TextFieldが遅い
