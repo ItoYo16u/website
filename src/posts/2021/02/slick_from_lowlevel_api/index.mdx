@@ -113,7 +113,8 @@ Await.result(
 res: Vector[Person] = Vector(Person(id = 1, name = "taro"), Person(id = 2, name = "hanako"))
 ```
 
-ちなみにテーブルを作成する`CREATE TABLE ...` は次に説明する`TableQuery[S extends Table[T]]`を用いて`conn.run(tableQuery.schema.create)`を実行しても同様の結果が得られる.
+ちなみにテーブルを作成する`CREATE TABLE ...` は次に説明する`TableQuery[S extends Table[T]]`を用いて
+`conn.run(tableQuery.schema.create)`を実行しても同様の結果が得られる.
 
 ### tableQuery
 定義した`coffees`テーブルをslickのtable queryから操作する
@@ -131,8 +132,18 @@ val coffees = TableQuery[Coffees]
 
 ```
 
+テーブル定義にはプリミティブな型(`Int`,`Double`,`String`)、`Option`や
+(`slick 3.3`以降だが)`java.time.Instant`,`java.time.LocalDateTime`などが使える.
+
+時刻のデータ型については[slick 3.3のリリースノート](https://scala-slick.org/doc/3.3.1/upgrade.html#support-for-java.time-columns)
+を見てほしい.
+
+`nullable`な値は`Option`で表現する.
+
 `TableQuery`には`DBIOAction`を生成する様々なメソッドが生えている. APIはコレクション操作によく似ている.
 このDBIOActionが`conn.run`でsqlにマッピングされる.
+
+slickのユーザーは`TableQuery[T]`を使ってSQLを組み立てて``db.run``でそれを実行すればいい.
 
 ```scala
 val action = coffees.filter(_.price < 9.9).map(_.name).result
@@ -142,14 +153,17 @@ Await.result(conn.run(action),Duration.Inf)
 ```
 
 `Coffees`クラスの`*`メソッドを以下のように修正することで自動的にマッピングすることもできる.
+`Table[T]`の`T`がtuppleではなく case class になっている点に注意.
 
 ```diff:test.scala
-class Coffees(tag:Tag) extends Table[(String,Double,Int)](tag,"coffees"){
+case class Coffee(name:String,price:Double,sales:Int)
+
+class Coffees(tag:Tag) extends Table[Coffee](tag,"coffees"){
   def name = column[String]("name")
   def price = column[Double]("price")
   def sales = column[Int]("sales")
 - def * = (name,price,sales)
-+ def * = (name,price,sales) <> (Coffees.tupled,Coffees.unapply)
++ def * = (name,price,sales) <> (Coffee.tupled,Coffee.unapply)
 }
 
 val coffees = TableQuery[Coffees]
