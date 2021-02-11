@@ -1,0 +1,211 @@
+---
+path: "scala-3-compile-time-macro"
+date: "20210211"
+title: "Scala 3のマクロでcompile時にASTを操作する"
+description: "..."
+status: "draft"
+tags: ["Scala"]
+---
+
+# About
+しにゃいさんの[この記事](https://shinyaigeek.dev/post/introduction-to-AST)を読んで
+JSでもAST操作できるのか～と感心したのでScala2のマクロに触れつつScala 3で導入されたcompile時のmacroを紹介する.
+
+## AST(Abstract Syntax Tree)とは
+これはさっきのブログにも書いてあるがプログラムの構造を木構造で表現したやつ.
+
+Scalaでは、例えば`x < 10`という式は次のような構造をもつ.
+
+```scala
+Apply(
+  Select(
+    Indent(
+      TermName("x")
+      ),
+      TermName("$less")
+  ),
+  List(
+    Literal(
+      Constant(10)
+    )
+  )
+)
+```
+
+
+マクロはScala 2でexperimentalに導入されて`slick`やら`??`やらいろんなライブラリで使われている.
+
+Scalaのマクロの世界には`universe`や`mirror`という概念があるので順をおって簡単に説明しておく.
+
+
+
+### universe
+変数、関数や型情報の集合のこと
+runtime universeとcompile time universeがあり、それぞれ実行時の変数や型の情報、コンパイル時の変数や型の情報を持っている。
+
+compile time universeは事前に用意された便利機能を使うためにScala2系では`scala.reflect.macros.Context`、3系では`Quotes`にラップされたものを使う。
+### mirror
+universeに含まれる情報を写し取ってASTをゴニョゴニョ操作するために使う.
+
+Scala2系の話だがこの記事が参考になる 
+
+https://itakeshi.hatenablog.com/entry/2017/12/23/002550#%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%AB%E6%99%82%E3%83%AA%E3%83%95%E3%83%AC%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3-%E3%82%B3%E3%83%B3%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%81%A8macro%E3%82%AD%E3%83%BC%E3%83%AF%E3%83%BC%E3%83%89
+
+## Scala3のマクロ
+
+
+これも先に挙げたブログに書いてあるがJavaScriptのAST操作では`@babel/parser`を使ってコードの文字列をparse(reify)し
+"@babel/traverse"でASTを走査して編集したいASTを変換し
+`@babel/generator`を使ってASTからコードを生成するらしい。
+
+
+```javascript
+const { parse } = require("@babel/parser");
+const { default: generate } = require("@babel/generator");
+const { default: traverse } = require("@babel/traverse");
+const code = `
+if(hoge === "bar") {
+  fuga();
+}
+`
+const ast = parser(code); // code => ast
+const visitor = {}
+traverse(ast,visitor); // visitorという概念を使って特定のNodeへの処理を記述する
+const { code: output } = generate(ast); //ast => code
+console.log(output)
+```
+
+
+Scalaのマクロでは、似たようなことをするために抽象構文木を抽象化した`Expr`をコードからとりだす`quote`(バッククオートで表現する)と
+`Expr`を評価する`splicing`(`${expr}`で表現する)の組み合わせを使う.
+
+`parser(code)`が`quote`、`genarete(ast)`が`splicing`と考えてみるとわかりやすい.
+
+`quote`,`splicing`を使ったマクロはコンパイル時に評価される.
+
+ちなみに`quote`を使わずに実際にASTを記述することもできるが冗長になる。以下の`1 + 1`のASTを取り出すコードを見比べたら一目瞭然だろう.
+
+```scala
+
+val exprUsingQuote = `{1 + 1}
+
+// scala 2系の場合は q"1 + 1"
+
+val expr = Apply(Select(Literal(Constant(1)), TermName("+")), List(Literal(Constant(1))))
+```
+
+また`quote`を使えばASTに対してパターンマッチできる.嬉しいですね😊
+
+
+さて、JavaScriptでは対象となるNodeを探すために`visitor`という概念を使ったが、
+Scalaではこの`quote`,`splicing`,パターンマッチを使ってASTに対する処理を記述していく.
+
+
+例えば`println("hello world!")`のExprは
+
+```scala
+
+`{println("hello world")} 
+// #=> println("hello world")のExpr
+
+```
+
+という風に抜きだせる.
+
+
+
+逆に`Expr`をコードの中に埋め込む場合は次のようにする. 
+以下のコードはexprの中身を出力するコードに変換される.
+
+```scala
+
+def printAnyExpr(expr:Expr[Any])(using QuoteContext) =
+  '{ println(${Expr(expr.show)}) }
+
+// expr が `{x + y} のとき "x.+(y)"が表示される. 
+```
+
+### 実際にマクロを書いてみる
+
+引数として渡されたコードを詳細に表示するdebugSingleマクロを書いてみる。
+
+期待される挙動は以下のようになる.
+
+```scala
+val x = 1
+val y = 1
+debugSingle(x+y)
+// #=> "Value of x.+(y) is 2"
+```
+
+まず、Scala3 ではコンパイル時に評価されるマクロには`inline`句を付けるというルールがある。
+
+また、マクロの実装には`QuoteContext`というimplicit parameterが必要になる.
+
+```scala
+inline def debugSingle(inline expr:Any):Unit = ${ debugSingleImpl('expr) }
+
+private def debugSingleImpl(expr:Expr[Any])(using q: QuoteContext):Expr[Unit] = ???
+
+```
+
+`???`はScalaの便利な記法で未定義の処理の代わりにおける。Nothingと同等。呼び出すと`NotImplementedException`になる。
+
+`debugSingleImpl`の引数にある`using`はScala２系のimplicit parameterと同じ.
+
+Scala3ではimplicitは,暗黙の引数には`using`、型クラスの定義には`given`、型クラスの探索の`implicitly`は`summon`にリネームされた.
+
+`debugSIngleImpl`の実装はこんな感じになる. `expr.show`はコードを返すのでその`Expr`を再度取得して`splicing`している。
+
+```scala
+private def debugSingleImple(expr:Expr[Any])(using q:QuoteContext) :Expr[Unit] =
+  `{ println("Value of "+ ${Expr(expr.show)} + "is" + $expr  ) }
+```
+
+ここまでは[公式のチュートリアル](https://blog.softwaremill.com/starting-with-scala-3-macros-a-short-tutorial-88e9d2b2584c)の
+受け売りなので今度はScala3の新機能をつかいつつマクロを自作してみる。(書いてからこの処理ならマクロ使う意味あまりないのではッ！？って思ったが)
+
+期待する挙動は次のようになる. マクロをインポートすることでよしなにtoJsonメソッドをcase classにはやす。
+
+```scala
+
+case class Box(id:String)
+case class Person(id:String,name:String,age:Int,box:Box)
+
+object Main {
+  import sample.Macro._
+  def main(args:Array[String]) = {
+    val box = Box("1")
+    val john =Person("id","john",1,box)
+    println(Person.toJson)
+    // => {"id":"id","name":"jhon","age":1,"box": {"id": "1"}}
+
+  }
+}
+
+```
+
+### inlineな型クラス
+
+型クラスもinlineで定義できる.
+
+```scala
+  inline given ToJson[Int] {
+      override def toJson(a:Int): String = s"$a"
+  }
+```
+
+### extension
+
+Scala2系でimplicit conversionを使っていた既存クラスへのメソッド追加は`extension`で表現できるようになった。
+
+```scala
+  extension [T](inline x:T){
+    inline def toJson(using jsonizer:ToJson[T]):String = jsonizer.toJson(x)
+  }
+```
+
+
+コードはここにある
+
+https://github.com/ItoYo16u/dotty_macro_practices
